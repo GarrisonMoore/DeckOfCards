@@ -13,7 +13,7 @@ public class Dealer {
     static boolean dealerBust;
     static boolean h = true;
 
-    public Dealer(String name) {
+    public Dealer(String name) {  //dealer constructor
         this.bank = 10000;
         this.dealerBust = false;
         this.name = name;
@@ -47,21 +47,20 @@ public class Dealer {
         System.out.printf("%n%s's hand: %s",this.name,hand);
     }
 
-    public void playerTurn(Player player, Deck deck1, Scanner scanner) throws InterruptedException {
-        while (h) {
+    public void playerTurn(Player player, Deck deck1, Scanner scanner) throws InterruptedException { //this should probably be in the player class.
+        while (h) { // trying to encapsulate this in a loop, so that in case of invalid input, the user can try again.
             System.out.printf("%n%s, would you like to Hit or Pass? (h/p)", player.getName());
             String choice = scanner.nextLine();
 
-            if (choice.equalsIgnoreCase("h")) {
+            if (choice.equalsIgnoreCase("h")) {  // if else checks to see what the player wants to do.
+
                 System.out.println(player.getName() + " hits!");
 
                 Card drawnCard = this.drawCard(deck1); //dealer draws a card object
                 System.out.printf("%n%s's card drawn: %s",player.getName(), drawnCard);
 
                 player.addCardToHand(drawnCard); //dealers gives the card object to the players hand
-
                 player.showHand();  //shows the players updated hand
-
                 player.checkPlayerScore(player);    //shows the players updated score
 
             } else if (choice.equalsIgnoreCase("p")) {
@@ -97,13 +96,14 @@ public class Dealer {
         Thread.sleep(3000);
     }
 
-    public void checkDealersScore(Dealer dealer){
+    public void checkDealersScore(Dealer dealer){  // method that calculates the dealers score and displays it.
         dealer.score = 0;
-        for (Card card : dealer.hand) {
+        for (Card card : dealer.hand) {  //sorting the dealers hand by card value.
             dealer.score += card.getCardValue();
         }
         System.out.printf("%nDealer's score: %d",dealer.score);
-        if (dealer.score > 21){
+
+        if (dealer.score > 21){  // also check if the dealer has bust
             System.out.printf("%n%s busts!",dealer.name);
             dealerBust= true;
         }

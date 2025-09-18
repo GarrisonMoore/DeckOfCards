@@ -46,41 +46,41 @@ public class CardGame {
         // some things in the game loop are not working correctly right now.
 
         System.out.println(" ");
-        dealer1.ShuffleDeck(deck1);
+        dealer1.ShuffleDeck(deck1);  //dealer method that shuffles the deck
         Thread.sleep(2000);
-        dealer1.dealInitialHand(dealer1,deck1,player1);
+        dealer1.dealInitialHand(dealer1,deck1,player1); //dealer method that deals the initial 2 cards of blackjack to the dealer and player
         Thread.sleep(2000);
 
-        dealer1.showHand();
-        dealer1.checkDealersScore(dealer1);
+        dealer1.showHand(); //dealer method shows the dealers hand
+        dealer1.checkDealersScore(dealer1);  //method shows the dealers score
 
         System.out.println(" ");
 
-        player1.showHand();
-        player1.checkPlayerScore(player1);
+        player1.showHand(); //player method shows the players hand
+        player1.checkPlayerScore(player1); //player method shows the players score
         Thread.sleep(1000);
 
 
-        while (gameActive) {
-            if (Player.p1Bust || Dealer.dealerBust) {
+        while (gameActive) {  //start of the game loop
+            if (Player.p1Bust || Dealer.dealerBust) { //trying to end the game loop when either player busts
                 gameActive = false;
                 break;
             }
 
             System.out.println(" ");
             Thread.sleep(3000);
-            dealer1.playerTurn(player1, deck1, scanner);
-            if (Player.p1Bust){
+            dealer1.playerTurn(player1, deck1, scanner); // player turn method. see Dealer.java class for more info. This should probably be in the player class.
+            if (Player.p1Bust){ // trying to end the game loop if player busts after their turn
                 break;
             }
             System.out.println(" ");
             Thread.sleep(5000);
-            dealer1.dealerTurn(dealer1, deck1, player1);
-            if (Dealer.dealerBust) {
+            dealer1.dealerTurn(dealer1, deck1, player1); // dealer turn method. see Dealer.java class for more info.
+            if (Dealer.dealerBust) { // trying to end the game loop if dealer busts after their turn
                 break;
             }
         }
-
+            //end of game, need to create another loop for replayability.
         if (Player.p1Bust){
             System.out.println("You Busted!");
         }
