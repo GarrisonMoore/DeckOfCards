@@ -52,7 +52,8 @@ public class Deck {
         System.out.printf("%s of ",rankKeys.get(randomIndex));
     }*/
 
-    public void generateDeck(){     // this method will generate a deck deck object
+    public void generateDeck(){// this method will generate a deck deck object
+        deckOfCards.clear();
         for(String suit : suits){   // loop sorts through all suits and ranks and creates a new card object for each
             for (String rank : rankKeys) {
                 deckOfCards.add(new Card(rank,suit,ranks.get(rank))); // adds the card object to the deck
@@ -61,5 +62,9 @@ public class Deck {
             //temporary display of deck for testing.
         System.out.printf("%nDisplaying all sorted card objects in our deck: %s",deckOfCards); //  < displays all cards in the deck
         System.out.printf("%nTotal Cards in the deck: %d",deckOfCards.size());                 //  < displays the total number of cards in the deck
+    }
+
+    public void clearDeck(){
+        deckOfCards.clear();
     }
 }

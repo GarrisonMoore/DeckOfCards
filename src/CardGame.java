@@ -18,7 +18,8 @@ public class CardGame {
 
     public static void main(String[] args) throws InterruptedException {
 
-        boolean gameActive = true; // a boolean value used to control the game loop.
+        boolean gameActive = true;
+        boolean replay = false;     // boolean values used to control the game loops
 
             // first, we get user input for name and wager.
         Scanner scanner = new Scanner(System.in);
@@ -27,65 +28,84 @@ public class CardGame {
             // converting user input to a String object for easier transfer to player object name.
         String playerName = scanner.nextLine();
 
-        Player player1 = new Player (playerName); // declaring the new player object, will ask for users name and wager, creating a new Player object.
-        Dealer dealer1 = new Dealer ("Greasy Dealer"); // declaring a new dealer object.
-        Pot currentPot = new Pot();                         // declaring a new pot object
-        System.out.println("You will start with $10,000 to wager.");
+        Players player1 = new Player1(GREEN+playerName+RESET); // declaring the new player1 object, will ask for users name and wager, creating a new Player object.
+        Dealers dealer1 = new ShadyDealer ("Shady Dealer"); // declaring a new dealer variant object.
+        Pot currentPot = new Pot();// declaring a new pot object
+
+        while (true) {
+
+            player1.clearPlayer();
+            dealer1.clearDealer();
+            currentPot.clearPot();
+            Deck deck1 = new Deck();
+            System.out.println(" ");
+
         player1.showBank();     // this method shows the players bank balance.
-        player1.playerWager();  // this method gets a value from the user for their wager amount. this value is matched by the dealer.
+        player1.playerWager();// this method gets a value from the user for their wager amount. this value is matched by the dealer.
+        player1.DealerMatchPlayerWager(dealer1);
+        dealer1.showDealerBank();
         player1.showBank();
-        currentPot.showPotValue();  //this method shows the total pot value.
+        currentPot.displayPotValue();  //this method shows the total pot value.
         Thread.sleep(3000);
 
-        // below I call the deck class to create a deck object using card objects. Also displays all cards in the deck and total # of cards in the deck.
-        Deck deck1 = new Deck();    // see Deck.java class for more info
+            System.out.println(" ");
+            dealer1.ShuffleDeck(deck1);  //dealer method that shuffles the deck
+            Thread.sleep(2000);
+            dealer1.dealInitialHand(dealer1, deck1, player1); //dealer method that deals the initial 2 cards of blackjack to the dealer and player
+            Thread.sleep(2000);
 
-
-
-        // everything below is a work in progress towards a blackjack game. if you just want to see the code for a deck of cards, see Deck.java class
-        // some things in the game loop are not working correctly right now.
-
-        System.out.println(" ");
-        dealer1.ShuffleDeck(deck1);  //dealer method that shuffles the deck
-        Thread.sleep(2000);
-        dealer1.dealInitialHand(dealer1,deck1,player1); //dealer method that deals the initial 2 cards of blackjack to the dealer and player
-        Thread.sleep(2000);
-
-        dealer1.showHand(); //dealer method shows the dealers hand
-        dealer1.checkDealersScore(dealer1);  //method shows the dealers score
-
-        System.out.println(" ");
-
-        player1.showHand(); //player method shows the players hand
-        player1.checkPlayerScore(player1); //player method shows the players score
-        Thread.sleep(1000);
-
-
-        while (gameActive) {  //start of the game loop
-            if (Player.p1Bust || Dealer.dealerBust) { //trying to end the game loop when either player busts
-                gameActive = false;
-                break;
-            }
+            dealer1.showHand(); //dealer method shows the dealers hand
+            dealer1.checkScore();  //method shows the dealers score
 
             System.out.println(" ");
-            Thread.sleep(3000);
-            dealer1.playerTurn(player1, deck1, scanner); // player turn method. see Dealer.java class for more info. This should probably be in the player class.
-            if (Player.p1Bust){ // trying to end the game loop if player busts after their turn
-                break;
+
+            player1.showHand(); //player method shows the players hand
+            player1.checkScore(); //player method shows the players score
+            Thread.sleep(1000);
+
+
+            while (gameActive) {  //start of the game loop
+                if (player1.Bust || dealer1.dealerBust || (player1.hasPassed && dealer1.hasPassed)) { //trying to end the game loop when either player busts
+                    gameActive = false;
+                }
+
+                System.out.println(" ");
+                Thread.sleep(1000);
+                dealer1.playerTurn(player1, deck1, scanner); // player turn method. see Dealer.java class for more info. This should probably be in the player class.
+                if (player1.Bust) { // trying to end the game loop if player busts after their turn
+                    break;
+                }
+                System.out.println(" ");
+                Thread.sleep(1000);
+                dealer1.turn(dealer1, deck1, player1); // dealer turn method. see Dealer.java class for more info.
+                if (dealer1.dealerBust) { // trying to end the game loop if dealer busts after their turn
+                    break;
+                }
+                if (dealer1.hasPassed) {
+                    break;
+                }
             }
-            System.out.println(" ");
-            Thread.sleep(5000);
-            dealer1.dealerTurn(dealer1, deck1, player1); // dealer turn method. see Dealer.java class for more info.
-            if (Dealer.dealerBust) { // trying to end the game loop if dealer busts after their turn
-                break;
-            }
-        }
             //end of game, need to create another loop for replayability.
-        if (Player.p1Bust){
-            System.out.println("You Busted!");
-        }
-        if (dealer1.dealerBust){
-            System.out.println("Dealer Busted!");
+
+            if (player1.getScore() > dealer1.getScore() && !player1.Bust) {
+                player1.bank += currentPot.getPotValue();
+                System.out.printf(GREEN + "%s wins this hand!" + RESET, player1.getName());
+                System.out.printf("%n%s wins the pot of $%d", player1.getName(), currentPot.getPotValue());
+                player1.showBank();
+            } else if (player1.getScore() < dealer1.getScore() || !dealer1.dealerBust) {
+                dealer1.bank += currentPot.getPotValue();
+                System.out.printf(GREEN + "%s wins this hand!" + RESET, dealer1.getName());
+                System.out.printf("%n%s wins the pot of $%d", dealer1.getName(), currentPot.getPotValue());
+                dealer1.showBank();
+            } else {}
+
+            System.out.printf("%nPlay again? (y/n)");
+            String playAgain = scanner.nextLine();
+            if (!playAgain.equalsIgnoreCase("y")) {
+                break;
+            } else if (playAgain.equalsIgnoreCase("n")) {
+                gameActive = false;
+            }
         }
         System.out.println(" ");
         Thread.sleep(3000);
@@ -94,7 +114,9 @@ public class CardGame {
         Thread.sleep(3000);
         scanner.close();
 
-        // i need to figure out how to end the game loop after both players have passed.
-        // need to make a method for a tie condition.
+        //TODO  i need to figure out how to end the game loop after both players have passed.
+        //      need to make a method for a tie condition.
+        //      need to implement ACE 1 or 11 scoring option.
+        //      need to implement hiding the dealers second card dealt.
     }
 }
