@@ -3,6 +3,15 @@ import java.util.Scanner;
 
 public class Players {
 
+    public static final String RESET = "\u001B[0m";
+    public static final String RED = "\u001B[31m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String BLUE = "\u001B[34m";
+    public static final String YELLOW = "\u001b[33m";
+    public static final String MAGENTA = "\u001b[35m";
+    public static final String CYAN = "\u001b[36m";
+    public static final String BLACK = "\u001B[30m";
+
     private final ArrayList<Card> playerHand;
     public String name;
     public int bank;
@@ -42,8 +51,16 @@ public class Players {
 
     public void checkScore() { //method calculates the players score and displays it.
         this.score = 0;
+        int aces = 0;
         for (Card card : playerHand) {
             this.score += card.getCardValue();
+            if (card.getRank().contains("ACE")) {
+                aces++; // checking for aces and logging the number of aces.
+            }
+        }
+        while (this.score > 21 && aces > 0) {  //if score is greater than 21 and there is an ACE in the hand, score - 10.
+            this.score -= 10;
+            aces--;
         }
         System.out.printf("%n%s's score: %d", name, this.score);
 

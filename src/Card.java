@@ -18,6 +18,11 @@ public class Card {
         return suit;
     }*/
 
+    public String getRank(){
+        return rank;
+
+    }
+
     public int getCardValue(){
         return cardValue;
     }

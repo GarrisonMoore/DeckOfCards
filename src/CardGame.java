@@ -21,6 +21,8 @@ public class CardGame {
         boolean gameActive = true;
         boolean replay = false;     // boolean values used to control the game loops
 
+        System.out.println("Welcome to Blackjack!");
+        System.out.println(" ");
             // first, we get user input for name and wager.
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter your name: ");
@@ -29,7 +31,7 @@ public class CardGame {
         String playerName = scanner.nextLine();
 
         Players player1 = new Player1(GREEN+playerName+RESET); // declaring the new player1 object, will ask for users name and wager, creating a new Player object.
-        Dealers dealer1 = new ShadyDealer ("Shady Dealer"); // declaring a new dealer variant object.
+        Dealers dealer1 = new ShadyDealer (MAGENTA+"Shady Dealer"+RESET); // declaring a new dealer variant object.
         Pot currentPot = new Pot();// declaring a new pot object
 
         while (true) {
@@ -85,21 +87,41 @@ public class CardGame {
                     break;
                 }
             }
-            //end of game, need to create another loop for replayability.
 
-            if (player1.getScore() > dealer1.getScore() && !player1.Bust) {
+                // end of game, winning/ losing conditions below
+            if (dealer1.dealerBust) {
                 player1.bank += currentPot.getPotValue();
-                System.out.printf(GREEN + "%s wins this hand!" + RESET, player1.getName());
+                System.out.printf(GREEN + "%n%s wins this hand!" + RESET, player1.getName());
                 System.out.printf("%n%s wins the pot of $%d", player1.getName(), currentPot.getPotValue());
                 player1.showBank();
-            } else if (player1.getScore() < dealer1.getScore() || !dealer1.dealerBust) {
+            }
+            if (player1.Bust) {
                 dealer1.bank += currentPot.getPotValue();
-                System.out.printf(GREEN + "%s wins this hand!" + RESET, dealer1.getName());
+                System.out.printf(GREEN + "%n%s wins this hand!" + RESET, dealer1.getName());
                 System.out.printf("%n%s wins the pot of $%d", dealer1.getName(), currentPot.getPotValue());
                 dealer1.showBank();
-            } else {}
+            }
+            if (player1.hasPassed && dealer1.hasPassed) {
+                if (player1.getScore() > dealer1.getScore()){
+                    player1.bank += currentPot.getPotValue();
+                    System.out.printf(GREEN + "%n%s wins this hand!" + RESET, player1.getName());
+                    System.out.printf("%n%s wins the pot of $%d", player1.getName(), currentPot.getPotValue());
+                    player1.showBank();
+                } else if (dealer1.getScore() > player1.getScore()) {
+                    dealer1.bank += currentPot.getPotValue();
+                    System.out.printf(MAGENTA + "%n%s wins this hand!" + RESET, dealer1.getName());
+                    System.out.printf("%n%s wins the pot of $%d", dealer1.getName(), currentPot.getPotValue());
+                    dealer1.showBank();
+                }
+            }
+            if (player1.getScore() == dealer1.getScore()) {
+                System.out.printf(YELLOW + "%nIt's a draw!" + RESET);
+                player1.bank += currentPot.returnPlayerWager();
+                dealer1.bank += currentPot.returnDealerWager();
 
-            System.out.printf("%nPlay again? (y/n)");
+            }
+
+            System.out.printf("%nPlay another hand? (y/n)");
             String playAgain = scanner.nextLine();
             if (!playAgain.equalsIgnoreCase("y")) {
                 break;
@@ -114,9 +136,13 @@ public class CardGame {
         Thread.sleep(3000);
         scanner.close();
 
-        //TODO  i need to figure out how to end the game loop after both players have passed.
+        //TODO
+        //      need to display in the console that the dealer is matching the players wager
+        //      need to implement dealer rotation when dealer loses all money
         //      need to make a method for a tie condition.
-        //      need to implement ACE 1 or 11 scoring option.
-        //      need to implement hiding the dealers second card dealt.
+        //      need to implement hiding the dealers second card dealt until everybody has passed / bust
+        //      need to implement rotation of dealers, and add more players
+        //      need to define and implement dealer variant specific traits
+        //      end the game if player has no more money.
     }
 }

@@ -15,7 +15,7 @@ public class Deck {
     public static LinkedHashMap<String, Integer> ranks = new LinkedHashMap<String, Integer>();
         static {
             //rank list
-            ranks.put(BLUE + "ACE" + RESET, 1);
+            ranks.put(BLUE + "ACE" + RESET, 11);
             ranks.put(BLUE + "TWO" + RESET, 2);
             ranks.put(BLUE + "THREE" + RESET, 3);
             ranks.put(BLUE + "FOUR" + RESET, 4);  // putting all ranks in a linked hashmap so that a ranks String key can be used to retrieve values for scoring.

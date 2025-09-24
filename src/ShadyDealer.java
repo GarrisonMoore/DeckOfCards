@@ -3,7 +3,7 @@ import java.util.Random;
 public class ShadyDealer extends Dealers {
 
     public ShadyDealer(String name){
-        super (name = "Shady Dealer");
+        super (name = MAGENTA+"Shady Dealer"+RESET);
     }
 
     @Override
@@ -18,9 +18,12 @@ public class ShadyDealer extends Dealers {
             if (dealerBust) {
                 return;
             }
+            System.out.println(" ");
+            Thread.sleep(2000);
+
         }
         if (!dealerBust){
-            System.out.printf("%n%s passes.",name);
+            System.out.printf("%n%s stands.",name);
             dealer.hasPassed = true;
         }
         Thread.sleep(2000);
