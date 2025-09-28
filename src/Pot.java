@@ -1,8 +1,8 @@
 public class Pot {
 
-    public static int dealerWager;
-    public static int playerWager;
-    public int potValue;
+    protected static int dealerWager;
+    protected static int playerWager;
+    protected int potValue;
 
     public Integer displayPotValue() {
         potValue = dealerWager + playerWager;

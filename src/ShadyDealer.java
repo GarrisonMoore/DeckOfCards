@@ -2,13 +2,43 @@ import java.util.Random;
 
 public class ShadyDealer extends Dealers {
 
+    private final Card sleevedACE;// hidden card this dealer uses to cheat
+    private boolean hasCheated = false;
+
     public ShadyDealer(String name){
+
         super (name = MAGENTA+"Shady Dealer"+RESET);
+
+        this.sleevedACE = new Card("ACE", "SPADES", 11);
     }
 
     @Override
     public void turn (Dealers dealer, Deck deck1, Players player) throws InterruptedException {
+        if (!hasCheated && score > 11){
+            Random RNG = new Random();
+            boolean hasACE = false;
+            for (Card card: hand ){
+                if (card.getRank().equalsIgnoreCase("ACE")){
+                    hasACE = true;
+                    break;
+                }
+            }
+            if (!hasACE) {
+                if (RNG.nextInt(2) == 1) {
+                    dealer.addCardToHand(sleevedACE);
+                    System.out.printf("%n%s hits!, ", name);
+                    System.out.printf("%n%s's card drawn: %s", name, sleevedACE);
+                    dealer.showHand();
+                    dealer.checkScore();
+                    hasCheated = true;
+                }else{
+                    hasCheated = false;
+                }
+            }
+        }
+
         while (dealer.getScore(score) < 17){
+
             Card drawnCard = this.drawCard(deck1);      // making the dealer hit until he gets to 17 or more.
             System.out.printf("%n%s hits!, ",name);
             System.out.printf("%n%s's card drawn: %s",name,drawnCard);

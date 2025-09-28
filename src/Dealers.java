@@ -13,12 +13,12 @@ public abstract class Dealers extends Players {
     public static final String CYAN = "\u001b[36m";
     public static final String BLACK = "\u001B[30m";
 
-    private ArrayList<Card> hand;
-    public boolean dealerBust;
-    public boolean turnActive = true;
+    protected ArrayList<Card> hand;
+    protected boolean dealerBust;
+
 
     public Dealers(String name) {
-        super (name);
+        super (MAGENTA+name+RESET);
         this.hand = new ArrayList<>(); //making a new empty arraylist for the dealers hand.
         this.score = 0;  //starting score at 0.
     }
@@ -40,10 +40,6 @@ public abstract class Dealers extends Players {
         System.out.println(" ");
     }
 
-    public Card drawCard(Deck deck1){       //method draws a single card
-        return deck1.deckOfCards.removeFirst();
-    }
-
     public void addCardToHand(Card card){
         this.hand.add(card);
     }
@@ -52,34 +48,6 @@ public abstract class Dealers extends Players {
         System.out.printf("%n%s's hand: %s",this.name,hand);
     }
 
-    public void playerTurn(Players player, Deck deck1, Scanner scanner) throws InterruptedException { //this should probably be in the player class.
-        while (turnActive) { // trying to encapsulate this in a loop, so that in case of invalid input, the user can try again.
-            System.out.printf("%n%s, would you like to Hit or Stand? (h/s)", player.getName());
-            String choice = scanner.nextLine();
-
-            if (choice.equalsIgnoreCase("h")) {  // if else checks to see what the player wants to do.
-
-                System.out.println(player.getName() + " hits!");
-
-                Card drawnCard = this.drawCard(deck1); //dealer draws a card object
-                System.out.printf("%n%s's card drawn: %s",player.getName(), drawnCard);
-
-                player.addCardToHand(drawnCard); //dealers gives the card object to the players hand
-                player.showHand();  //shows the players updated hand
-                player.checkScore();//shows the players updated score
-                if (player.Bust){
-                    turnActive = false;
-                }
-            } else if (choice.equalsIgnoreCase("s")) {
-                System.out.printf("%n%s stands.",player.getName());
-                player.hasPassed = true;
-                turnActive = false;
-            } else {
-                System.out.println("Invalid input. Please enter 'h' or 's'.");
-            }
-        }
-        Thread.sleep(1000);
-    }
 
     public int getScore(Integer score){
         return this.score;
@@ -121,6 +89,13 @@ public abstract class Dealers extends Players {
         this.score = 0;
         this.dealerBust = false;
         this.turnActive = true;
+        this.blackjack = false;
     }
 
+    public void checkForBlackjack(){
+        if(this.score == 21 && hand.size() == 2){
+            blackjack = true;
+            System.out.printf("%n%s has Blackjack!", name);
+        }
+    }
 }

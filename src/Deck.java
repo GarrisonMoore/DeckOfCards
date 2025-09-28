@@ -8,11 +8,12 @@ public class Deck {
     public static final String BLACK = "\u001B[30m";
     public static final String BLUE = "\u001B[34m";
 
-    public ArrayList<Card> deckOfCards = new ArrayList<>(); // this will store all card objects, making up a deck
-    public static final ArrayList<String> rankKeys = new ArrayList<String>(); // this list will store all the rank keys as Strings.
-    public static final ArrayList<String> suits = new ArrayList<String>(); // this list will store all the suits, only needs to be String values.
+    protected ArrayList<Card> deckOfCards = new ArrayList<>(); // this will store all card objects, making up a deck
+    private static final ArrayList<String> rankKeys = new ArrayList<String>(); // this list will store all the rank keys as Strings.
+    private static final ArrayList<String> suits = new ArrayList<String>(); // this list will store all the suits, only needs to be String values.
 
-    public static LinkedHashMap<String, Integer> ranks = new LinkedHashMap<String, Integer>();
+    private static LinkedHashMap<String, Integer> ranks = new LinkedHashMap<String, Integer>();
+
         static {
             //rank list
             ranks.put(BLUE + "ACE" + RESET, 11);

@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Players {
+public abstract class Players {
 
     public static final String RESET = "\u001B[0m";
     public static final String RED = "\u001B[31m";
@@ -13,12 +13,14 @@ public class Players {
     public static final String BLACK = "\u001B[30m";
 
     private final ArrayList<Card> playerHand;
-    public String name;
-    public int bank;
+    protected String name;
+    protected int bank;
     protected int score;
     protected int wager;
-    public boolean Bust = false;
-    public boolean hasPassed = false;
+    protected boolean Bust = false;
+    protected boolean hasPassed = false;
+    protected boolean blackjack = false;
+    protected boolean turnActive = true;
 
     public Players(String name) {  //player constructor
         this.bank = 10000; //starting the players bank at 10,000. Value will be subtracted using the playerWager method.
@@ -27,6 +29,14 @@ public class Players {
         this.playerHand = new ArrayList<>(); //making a new empty arraylist for the players hand.
         this.score = 0;    //Starting score at 0.
     }
+
+    public Card drawCard(Deck deck1){       //method draws a single card
+        return deck1.deckOfCards.removeFirst();
+    }
+
+
+    public abstract void turn(Dealers Dealer, Deck deck1, Players players) throws InterruptedException;
+
 
     public void addCardToHand(Card card) {  //method adds a card object to the players hand, for use in playerTurn method.
         playerHand.add(card);
@@ -99,6 +109,15 @@ public class Players {
         this.score = 0;
         hasPassed = false;
         Bust = false;
+        turnActive = true;
+        blackjack = false;
+    }
+
+    public void checkForBlackjack(){
+        if(this.score == 21 && this.playerHand.size() == 2){
+            blackjack = true;
+            System.out.printf("%n%s has Blackjack!", name);
+        }
     }
 
 
