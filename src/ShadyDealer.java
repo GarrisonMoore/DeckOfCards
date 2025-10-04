@@ -1,3 +1,9 @@
+/** This class represents the level 2 dealer, inherits from the Dealers / Players classes.
+ * Dealer hits until they get to 17 or more.
+ * Dealer uses a sleeved ace card to cheat, has a 50% chance of cheating if the dealer does not have an ace in their hand.
+ */
+
+
 import java.util.Random;
 
 public class ShadyDealer extends Dealers {
@@ -35,6 +41,7 @@ public class ShadyDealer extends Dealers {
                     hasCheated = false;
                 }
             }
+            Thread.sleep(1000);
         }
 
         while (dealer.getScore(score) < 17){
@@ -50,7 +57,6 @@ public class ShadyDealer extends Dealers {
             }
             System.out.println(" ");
             Thread.sleep(2000);
-
         }
         if (!dealerBust){
             System.out.printf("%n%s stands.",name);

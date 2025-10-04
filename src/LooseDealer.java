@@ -1,14 +1,18 @@
-import java.util.Random;
+/** Loose Dealer object, inherits from the Dealers / PLayers classes.
+ * This objects turn method is safer than ShadyDealer.
+ * It will hit until it gets to 17 or more.
+ * No cheating used here
+ */
 
-public class GreasyDealer extends Dealers {
+public class LooseDealer extends Dealers {
 
-    public GreasyDealer(String name){
-        super (name);
+    public LooseDealer(String name){
+        super (name = YELLOW+"Loose Dealer"+RESET);
     }
 
     @Override
     public void turn (Dealers dealer, Deck deck1, Players player) throws InterruptedException {
-        while (dealer.getScore(score) < 17){
+        while (dealer.getScore(score) < 17) {
             Card drawnCard = this.drawCard(deck1);      // making the dealer hit until he gets to 17 or more.
             System.out.printf("%n%s hits!, ",name);
             System.out.printf("%n%s's card drawn: %s",name,drawnCard);

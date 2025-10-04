@@ -1,13 +1,17 @@
+/** Pot object
+ * holds wager values
+ * calculate and distributed payouts
+ */
+
 public class Pot {
 
-    protected static int dealerWager;
     protected static int playerWager;
     protected int potValue;
 
-    public Integer displayPotValue() {
-        potValue = dealerWager + playerWager;
+
+    public void displayPotValue() {
+        potValue = playerWager;
         System.out.printf("%nOur total pot value is: $%d",potValue);
-        return potValue;
     }
     public Integer getPotValue() {
         return potValue;
@@ -21,10 +25,11 @@ public class Pot {
         return playerWager;
     }
 
-    public int returnDealerWager() {
-        return dealerWager;
+    public int get1to1Payout(){
+        return playerWager*2;
     }
 
+    public int get3to2payout(){
+        return (int) (playerWager + (playerWager * 1.5));
+    }
 }
-//need to make a method that distributes the pot winnings to the winners bank.
-//need to make a method for a tie condition..

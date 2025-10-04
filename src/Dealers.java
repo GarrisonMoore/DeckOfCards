@@ -1,3 +1,7 @@
+/** The parent class for the dealer variants, inherits from the Players class
+ */
+
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
@@ -75,15 +79,6 @@ public abstract class Dealers extends Players {
         }
     }
 
-    public void showDealerBank(){     //method that displays the dealer current bank value.
-        System.out.printf("%n%s's bank value: $%d%n",name,bank);
-    }
-
-    // not currently in use.
-    public int getBankValue(){
-        return bank;
-    }
-
     public void clearDealer(){
         this.hand.clear();
         this.score = 0;
@@ -98,4 +93,5 @@ public abstract class Dealers extends Players {
             System.out.printf("%n%s has Blackjack!", name);
         }
     }
+
 }

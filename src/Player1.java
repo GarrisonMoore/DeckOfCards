@@ -1,11 +1,14 @@
+/** This is the USER object, inherits from the Players class
+ */
+
 import java.util.Scanner;
 
 public class Player1 extends Players {
 
     public Player1(String name){
         super (name);
+        this.wallet = 1000;
     }
-
     @Override
     public void turn(Dealers Dealer, Deck deck1, Players players) throws InterruptedException {
         Scanner scanner1 = new Scanner(System.in);
@@ -23,10 +26,10 @@ public class Player1 extends Players {
                 players.addCardToHand(drawnCard); //dealers gives the card object to the players hand
                 players.showHand();  //shows the players updated hand
                 players.checkScore();//shows the players updated score
-                if (players.Bust){
+                if (players.Bust){ // if the player busts, their turn is over
                     turnActive = false;
                 }
-            } else if (choice.equalsIgnoreCase("s")) {
+            } else if (choice.equalsIgnoreCase("s")) {  // if player stands, their turn is over.
                 System.out.printf("%n%s stands.",players.getName());
                 players.hasPassed = true;
                 turnActive = false;

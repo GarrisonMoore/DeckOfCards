@@ -1,3 +1,7 @@
+/** The parent class for all "players", includes all dealer and player variants
+ *
+ */
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -14,16 +18,17 @@ public abstract class Players {
 
     private final ArrayList<Card> playerHand;
     protected String name;
-    protected int bank;
+    protected double wallet;
     protected int score;
     protected int wager;
     protected boolean Bust = false;
     protected boolean hasPassed = false;
     protected boolean blackjack = false;
     protected boolean turnActive = true;
+    Scanner scanner = new Scanner(System.in);
 
     public Players(String name) {  //player constructor
-        this.bank = 10000; //starting the players bank at 10,000. Value will be subtracted using the playerWager method.
+
         this.name = name;
         this.wager = wager;
         this.playerHand = new ArrayList<>(); //making a new empty arraylist for the players hand.
@@ -34,9 +39,7 @@ public abstract class Players {
         return deck1.deckOfCards.removeFirst();
     }
 
-
     public abstract void turn(Dealers Dealer, Deck deck1, Players players) throws InterruptedException;
-
 
     public void addCardToHand(Card card) {  //method adds a card object to the players hand, for use in playerTurn method.
         playerHand.add(card);
@@ -50,29 +53,28 @@ public abstract class Players {
         return this.name;
     }
 
-    public void showBank() {     //method that displays the player objects current bank value.
-        System.out.printf("%n%s's bank value: $%d%n", name, bank);
+    public void showBank() {     //method that displays the player objects current wallet value.
+        System.out.println("\n"+name+"'s wallet value: "+ wallet +"\n");
     }
 
     public int getScore() {
         return score;
     }
 
-
     public void checkScore() { //method calculates the players score and displays it.
         this.score = 0;
         int aces = 0;
-        for (Card card : playerHand) {
+        for (Card card : playerHand) { // checking for aces and logging the number of aces.
             this.score += card.getCardValue();
             if (card.getRank().contains("ACE")) {
-                aces++; // checking for aces and logging the number of aces.
+                aces++;
             }
         }
         while (this.score > 21 && aces > 0) {  //if score is greater than 21 and there is an ACE in the hand, score - 10.
-            this.score -= 10;
+            this.score -= 10;                  // this allows ace scoring automatically when favorable.
             aces--;
         }
-        System.out.printf("%n%s's score: %d", name, this.score);
+        System.out.printf("%n%s's score: %d", name, this.score); //displays score
 
         if (this.score > 21) {     //also check if the player has bust
             System.out.printf("%n%s busts!", name);
@@ -80,31 +82,33 @@ public abstract class Players {
         }
     }
 
-    //method that accepts user input for a wager, gives it to the pot, and subtracts it from the players bank.
+    //method that accepts user input for a wager, gives it to the pot, and subtracts it from the players wallet.
     public void playerWager() {
-        Scanner scanner = new Scanner(System.in);
         System.out.printf("%nEnter your wager: ");
-        while (!scanner.hasNextInt()) {
+        try{
+            int wager = scanner.nextInt();
+            if (wager > this.wallet) {  //if the user enters a wager that is greater than their wallet, it will automatically go all in while keeping wallet above 0.
+                wager = (int) this.wallet;  // making the wager equal to the players wallet value so that the wallet value does not go negative.
+                this.wager = wager;
+                this.wallet -= wager;
+            }else{
+                this.wager = wager;
+                this.wallet -= wager;
+            }
+
+        }catch (Exception e){ //catching invalid input
             System.out.println("Invalid input. Please enter a valid number.");
             scanner.next();
         }
-        this.wager = scanner.nextInt();
-        this.bank -= this.wager;
-        Pot.playerWager = this.wager;
-        Pot.dealerWager = this.wager;
-
+        Pot.playerWager = this.wager;  //passing the wager to the Pot object.
         scanner.nextLine();
     }
 
-    public int getWager(){
+    public int getWager(){ //currently unused method to retrieve the wager value
         return this.wager;
     }
 
-    public void DealerMatchPlayerWager(Dealers dealer){
-        dealer.bank -= getWager();
-    }
-
-    public void clearPlayer(){
+    public void clearPlayer(){  //clears object values for a new round
         this.playerHand.clear();
         this.score = 0;
         hasPassed = false;
@@ -113,7 +117,7 @@ public abstract class Players {
         blackjack = false;
     }
 
-    public void checkForBlackjack(){
+    public void checkForBlackjack(){ //checks for blackjacks
         if(this.score == 21 && this.playerHand.size() == 2){
             blackjack = true;
             System.out.printf("%n%s has Blackjack!", name);

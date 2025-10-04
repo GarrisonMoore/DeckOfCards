@@ -1,3 +1,7 @@
+/** Card object class that holds the card's rank and suit.
+ *
+ */
+
 public class Card {
 
     private final String suit;

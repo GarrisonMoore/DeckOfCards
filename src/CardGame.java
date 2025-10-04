@@ -1,9 +1,10 @@
+/** Main Blackjack Game class. *WORK IN PROGRESS*
+ * By: Garrison Moore
+ */
+
+
 import java.util.Scanner;
 
-/* This is a work in progress towards a replayable blackjack game. It is not fully functional currently.
-
- If you just want to see the code for a deck of cards; see up to line 40 in this class(CardGame.java), and see Deck.java class
-*/
 public class CardGame {
 
     //getting colors
@@ -16,9 +17,9 @@ public class CardGame {
     public static final String CYAN = "\u001b[36m";
     public static final String BLACK = "\u001B[30m";
 
-
+    public static boolean loanActive = false;
     public static boolean replay = true;
-
+    public static double dealerSwapThreshold = 2000;
     public static void main(String[] args) throws InterruptedException {
 
         boolean gameActive = true;
@@ -34,33 +35,32 @@ public class CardGame {
         String playerName = scanner.nextLine();
 
         Players player1 = new Player1(GREEN+playerName+RESET); // declaring the new player1 object, will ask for users name and wager, creating a new Player object.
-        Dealers dealer1 = new ShadyDealer (MAGENTA+"Shady Dealer"+RESET); // declaring a new dealer variant object.
+        Dealers currentDealer = new LooseDealer (YELLOW + "Loose Dealer" + RESET);
         Pot currentPot = new Pot();// declaring a new pot object
+        LoanShark loanshark = new LoanShark("loan shark");
 
         while (replay) {
             gameActive = true;
             player1.clearPlayer();
-            dealer1.clearDealer();
+            currentDealer.clearDealer();
             currentPot.clearPot();
             Deck deck1 = new Deck();
             System.out.println(" ");
 
-        player1.showBank();     // this method shows the players bank balance.
+        player1.showBank();     // this method shows the players wallet balance.
         player1.playerWager();// this method gets a value from the user for their wager amount. this value is matched by the dealer.
-        player1.DealerMatchPlayerWager(dealer1);
-        dealer1.showDealerBank();
         player1.showBank();
         currentPot.displayPotValue();  //this method shows the total pot value.
         Thread.sleep(3000);
 
             System.out.println(" ");
-            dealer1.ShuffleDeck(deck1);  //dealer method that shuffles the deck
+            currentDealer.ShuffleDeck(deck1);  //dealer method that shuffles the deck
             Thread.sleep(2000);
-            dealer1.dealInitialHand(dealer1, deck1, player1); //dealer method that deals the initial 2 cards of blackjack to the dealer and player
+            currentDealer.dealInitialHand(currentDealer, deck1, player1); //dealer method that deals the initial 2 cards of blackjack to the dealer and player
             Thread.sleep(2000);
 
-            dealer1.showHand(); //dealer method shows the dealers hand
-            dealer1.checkScore();  //method shows the dealers score
+            currentDealer.showHand(); //dealer method shows the dealers hand
+            currentDealer.checkScore();  //method shows the dealers score
 
             System.out.println(" ");
 
@@ -69,79 +69,112 @@ public class CardGame {
             Thread.sleep(1000);
 
             player1.checkForBlackjack();
-            dealer1.checkForBlackjack();
+            currentDealer.checkForBlackjack();
 
             while (gameActive) {//start of the game loop
-                if (player1.blackjack || dealer1.blackjack) {
+                if (player1.blackjack || currentDealer.blackjack) {
                     break;
                 }
-                if (player1.Bust || dealer1.dealerBust || (player1.hasPassed && dealer1.hasPassed)) { //trying to end the game loop when either player busts
+                if (player1.Bust || currentDealer.dealerBust || (player1.hasPassed && currentDealer.hasPassed)) { //trying to end the game loop when either player busts
                     gameActive = false;
                 }
 
                 System.out.println(" ");
                 Thread.sleep(1000);
-                player1.turn(dealer1, deck1, player1); // player turn method. see Dealer.java class for more info. This should probably be in the player class.
+                player1.turn(currentDealer, deck1, player1); // player turn method. see Dealer.java class for more info.
                 if (player1.Bust) { // trying to end the game loop if player busts after their turn
                     break;
                 }
                 System.out.println(" ");
                 Thread.sleep(1000);
-                dealer1.turn(dealer1, deck1, player1); // dealer turn method. see Dealer.java class for more info.
-                if (dealer1.dealerBust) { // trying to end the game loop if dealer busts after their turn
+                currentDealer.turn(currentDealer, deck1, player1); // dealer turn method. see Dealer.java class for more info.
+                if (currentDealer.dealerBust) { // trying to end the game loop if dealer busts after their turn
                     break;
                 }
-                if (dealer1.hasPassed) {
+                if (currentDealer.hasPassed) {
                     break;
                 }
             }
 
-                // end of game, winning/ losing conditions below
-            if (dealer1.dealerBust) {
-                player1.bank += currentPot.getPotValue();
-                System.out.printf(GREEN + "%n%s wins this hand!" + RESET, player1.getName());
-                System.out.printf("%n%s wins the pot of $%d", player1.getName(), currentPot.getPotValue());
+                // end of game, winning/ losing conditions and payout below
+            if (currentDealer.dealerBust) {
+                if (player1.blackjack){
+                    player1.wallet += currentPot.get3to2payout();
+                    System.out.printf(GREEN + "%n%s wins this hand!" + RESET, player1.getName());
+                    System.out.printf("%n%s wins: $%d", player1.getName(), currentPot.get3to2payout());
+                }else {
+                    player1.wallet += currentPot.get1to1Payout();
+                    System.out.printf(GREEN + "%n%s wins this hand!" + RESET, player1.getName());
+                    System.out.printf("%n%s wins: $%d", player1.getName(), currentPot.get1to1Payout());
+                }
                 player1.showBank();
                 Thread.sleep(1000);
             }
             if (player1.Bust) {
-                dealer1.bank += currentPot.getPotValue();
-                System.out.printf(GREEN + "%n%s wins this hand!" + RESET, dealer1.getName());
-                System.out.printf("%n%s wins the pot of $%d", dealer1.getName(), currentPot.getPotValue());
-                dealer1.showBank();
+                System.out.printf(GREEN + "%n%s wins this hand!" + RESET, currentDealer.getName());
                 Thread.sleep(1000);
+                currentPot.clearPot();
             }
-            if (player1.hasPassed && dealer1.hasPassed) {
-                if (player1.getScore() > dealer1.getScore() && !player1.Bust){
-                    player1.bank += currentPot.getPotValue();
-                    System.out.printf(GREEN + "%n%s wins this hand!" + RESET, player1.getName());
-                    System.out.printf("%n%s wins the pot of $%d", player1.getName(), currentPot.getPotValue());
+            if (player1.hasPassed && currentDealer.hasPassed) {
+                if (player1.getScore() > currentDealer.getScore() && !player1.Bust){
+                    if (player1.blackjack){
+                        player1.wallet += currentPot.get3to2payout();
+                        System.out.printf(GREEN + "%n%s wins this hand!" + RESET, player1.getName());
+                        System.out.printf("%n%s wins: $%d", player1.getName(), currentPot.get3to2payout());
+                    }else {
+                        player1.wallet += currentPot.get1to1Payout();
+                        System.out.printf(GREEN + "%n%s wins this hand!" + RESET, player1.getName());
+                        System.out.printf("%n%s wins: $%d", player1.getName(), currentPot.get1to1Payout());
+                    }
                     player1.showBank();
                     Thread.sleep(1000);
-                } else if (dealer1.getScore() > player1.getScore() && !dealer1.dealerBust) {
-                    dealer1.bank += currentPot.getPotValue();
-                    System.out.printf(MAGENTA + "%n%s wins this hand!" + RESET, dealer1.getName());
-                    System.out.printf("%n%s wins the pot of $%d", dealer1.getName(), currentPot.getPotValue());
-                    dealer1.showBank();
+                } else if (currentDealer.getScore() > player1.getScore() && !currentDealer.dealerBust) {
+                    currentPot.clearPot();
+                    System.out.printf(MAGENTA + "%n%s wins this hand!" + RESET, currentDealer.getName());
                     Thread.sleep(1000);
                 }
             }
-            if (player1.getScore() == dealer1.getScore()) {     // tie condition
+            if (player1.getScore() == currentDealer.getScore()) {     // tie condition
                 System.out.printf(YELLOW + "%nIt's a draw!" + RESET);
-                player1.bank += currentPot.returnPlayerWager();
-                dealer1.bank += currentPot.returnDealerWager();
+                player1.wallet += currentPot.returnPlayerWager();
                 Thread.sleep(1000);
             }
 
-            System.out.printf("%nPlay another hand? (y/n)");
+            System.out.printf("%nPlay another hand? (y/n)"); // replay
             String playAgain = scanner.nextLine();
             if (!playAgain.equalsIgnoreCase("y")) {
                 player1.blackjack = false;
-                dealer1.blackjack = false;
+                currentDealer.blackjack = false;
                 break;
             } else if (playAgain.equalsIgnoreCase("n")) {
                 replay = false;
             }
+
+            if (player1.wallet >= dealerSwapThreshold ) {  // swapping dealers if they lose too much money.
+                System.out.println("The house has removed the " + currentDealer.getName() + " from the game for losing too much money.");
+                if (currentDealer instanceof ShadyDealer){
+                    currentDealer = new LooseDealer(CYAN + "Loose Dealer" + RESET);
+                }else{
+                    currentDealer = new ShadyDealer(MAGENTA + "Shady Dealer" + RESET);
+                }
+            }
+
+            if (loanActive && player1.wallet >= loanshark.accountBalance*2){  // if player has a loan and has more than double the loan amount in their wallet, they are offered a chance to pay back their loan
+                loanshark.collectLoan(player1);
+            }
+
+            if (player1.wallet <= 0) { // if player loses all money, a loan shark offers a loan with interest
+                System.out.println("\nYou have lost all your money!");
+                if (!loanActive){
+                    loanshark.loanToPlayer(player1);
+                }else{
+                    System.out.println("You already have a loan!");
+                    System.out.printf("%s collects all of your valuables. The casino has consumed you.", currentDealer.getName());
+                }
+                System.out.println(" ");
+            }
+
+
         }
         System.out.println(" ");
         Thread.sleep(3000);
@@ -152,7 +185,7 @@ public class CardGame {
 
         //TODO
         //      need to display in the console that the dealer is matching the players wager
-        //      need to remove dealer bank, and matching wager. Replace with dealer collection, payout(1x), and blackjack payout(1.5x)
+        //      need to remove dealer wallet, and matching wager. Replace with dealer collection, payout(1x), and blackjack payout(1.5x)
         //      need to implement multiple decks. blackjack usually uses up to 8 decks.
         //      need to implement a split hand method
         //      need to implement a double down method
@@ -160,9 +193,8 @@ public class CardGame {
         //      need to implement dealer rotation when dealer loses all money
         //      need to define and implement player variant specific traits
         //      need to define and implement greasyDealer variant specific traits
-        //      need to implement a loan shark/bank object that can loan money with interest
+        //      need to implement a loan shark/wallet object that can loan money with interest
         //      need to offer player a loan from loan shark if player has no more money
-        //      need to implement more randomness
         //
     }
 }

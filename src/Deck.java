@@ -1,3 +1,5 @@
+/** Deck object that will store all card objects in a deck.
+ */
 
 import java.util.*;
 

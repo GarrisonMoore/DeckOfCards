@@ -1,9 +1,14 @@
+/** Player 2 currently not implemented, inherits from the Players class.
+ * need to add this variant to the "table" and make it play automatically like the dealers.
+ */
+
 import java.util.Scanner;
 
 public class Player2 extends Players{
 
     public Player2(String name){
         super (name);
+        this.wallet = 1000;
     }
 
     @Override
