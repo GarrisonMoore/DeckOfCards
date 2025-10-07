@@ -1,9 +1,21 @@
-/** A loan shark is a type of banker who offers loans to players.
- */
+/** A loan shark is a type of banker who offers loans to players. */
 
 import java.util.Scanner;
 
 public class LoanShark {
+
+    public static final String RESET = "\u001B[0m";
+    public static final String RED = "\u001B[31m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String BLUE = "\u001B[34m";
+    public static final String YELLOW = "\u001b[33m";
+    public static final String MAGENTA = "\u001b[35m";
+    public static final String CYAN = "\u001b[36m";
+    public static final String BLACK = "\u001B[30m";
+    public static final String WHITEbkgnd = "\u001B[47m";
+    public static final String YELLOWbkgnd = "\u001B[43m";
+
+    public static final String BOLD = "\u001B[1m\n";
 
     protected double interestRate = .15;
     protected double interest;
@@ -32,8 +44,7 @@ public class LoanShark {
     public void setInterestRate(){ // method to set the interest rate for the players loan
         this.interest = accountBalance * interestRate; //calculating the interest for the loan
         accountBalance += interest; // adding the interest to the account balance
-        System.out.printf("%nYou have been loaned $"+ loanAmount + " with $" + this.interest+" of interest.");
-        System.out.printf("%nYou now owe: $"+ accountBalance);
+        System.out.printf("%nYou have been loaned "+GREEN+"$"+ loanAmount + RESET+" with "+RED+"$" + this.interest+RESET+" of interest.");
     }
 
     public void collectLoan(Players player){ // method collects loan from player if their bank is above 3000
@@ -58,7 +69,11 @@ public class LoanShark {
     }
 
     public void getBalance(){ //displays the loan shark account balance
-        System.out.printf("%nYou owe: $"+accountBalance);
+        System.out.printf("%nYou now owe: "+RED+"$"+ accountBalance+RESET);
+    }
+
+    public String getName() {
+        return this.name;
     }
 
 }

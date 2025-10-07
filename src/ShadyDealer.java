@@ -1,6 +1,6 @@
 /** This class represents the level 2 dealer, inherits from the Dealers / Players classes.
  * Dealer hits until they get to 17 or more.
- * Dealer uses a sleeved ace card to cheat, has a 50% chance of cheating if the dealer does not have an ace in their hand.
+ * Dealer uses a sleeved ace card to cheat, has a 50% chance of cheating if the dealer does not already have an ace in their hand.
  */
 
 
@@ -8,23 +8,24 @@ import java.util.Random;
 
 public class ShadyDealer extends Dealers {
 
-    private final Card sleevedACE;// hidden card this dealer uses to cheat
+    private final Card sleevedACE; // hidden card this dealer uses to cheat
     private boolean hasCheated = false;
 
-    public ShadyDealer(String name){
+    public ShadyDealer(String name) {
 
         super (name = MAGENTA+"Shady Dealer"+RESET);
-
+        this.deckCount = 3;
         this.sleevedACE = new Card("ACE", "SPADES", 11);
+        displayDecks();
     }
 
     @Override
     public void turn (Dealers dealer, Deck deck1, Players player) throws InterruptedException {
-        if (!hasCheated && score > 11){
+        if (!hasCheated && score > 11) {
             Random RNG = new Random();
             boolean hasACE = false;
-            for (Card card: hand ){
-                if (card.getRank().equalsIgnoreCase("ACE")){
+            for (Card card: hand ) {
+                if (card.getRank().equalsIgnoreCase("ACE")) {
                     hasACE = true;
                     break;
                 }

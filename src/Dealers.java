@@ -19,19 +19,24 @@ public abstract class Dealers extends Players {
 
     protected ArrayList<Card> hand;
     protected boolean dealerBust;
+    protected int deckCount = 1;
 
 
     public Dealers(String name) {
-        super (MAGENTA+name+RESET);
+        super (name);
         this.hand = new ArrayList<>(); //making a new empty arraylist for the dealers hand.
         this.score = 0;  //starting score at 0.
+    }
+
+    public void displayDecks(){
+        System.out.printf("%n%s has %d decks.",name,deckCount);
     }
 
     public abstract void turn(Dealers Dealer,Deck deck1, Players players) throws InterruptedException;
 
     public void ShuffleDeck(Deck deck1){
         Collections.shuffle(deck1.deckOfCards);
-        System.out.printf("%n%S shuffling...",name);
+        System.out.printf("%n%s shuffling...",getName());
     }
 
     public void dealInitialHand(Dealers dealer, Deck deck1, Players player){
@@ -92,6 +97,10 @@ public abstract class Dealers extends Players {
             blackjack = true;
             System.out.printf("%n%s has Blackjack!", name);
         }
+    }
+
+    public int getDeckCount(){
+        return this.deckCount;
     }
 
 }

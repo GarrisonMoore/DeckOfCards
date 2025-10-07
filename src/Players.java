@@ -45,7 +45,7 @@ public abstract class Players {
         playerHand.add(card);
     }
 
-    public void showHand() {  //method that displays the players hand
+    public void showHand() {  // method that displays the players hand
         System.out.printf("%n%s's hand: %s", this.name, playerHand);
     }
 
@@ -53,8 +53,8 @@ public abstract class Players {
         return this.name;
     }
 
-    public void showBank() {     //method that displays the player objects current wallet value.
-        System.out.println("\n"+name+"'s wallet value: "+ wallet +"\n");
+    public void showWallet() {     //method that displays the player objects current wallet value.
+        System.out.println("\n"+name+"'s wallet value: "+GREEN+"$"+ wallet+RESET+"\n");
     }
 
     public int getScore() {
@@ -84,24 +84,32 @@ public abstract class Players {
 
     //method that accepts user input for a wager, gives it to the pot, and subtracts it from the players wallet.
     public void playerWager() {
-        System.out.printf("%nEnter your wager: ");
-        try{
-            int wager = scanner.nextInt();
-            if (wager > this.wallet) {  //if the user enters a wager that is greater than their wallet, it will automatically go all in while keeping wallet above 0.
-                wager = (int) this.wallet;  // making the wager equal to the players wallet value so that the wallet value does not go negative.
-                this.wager = wager;
-                this.wallet -= wager;
-            }else{
-                this.wager = wager;
-                this.wallet -= wager;
-            }
 
-        }catch (Exception e){ //catching invalid input
-            System.out.println("Invalid input. Please enter a valid number.");
-            scanner.next();
+        System.out.println("New Round!");
+        showWallet();
+        System.out.println("Enter your wager: ");
+        boolean Exception = true;
+
+        while (Exception) {
+            try { int wager = scanner.nextInt();
+
+                if (wager > this.wallet) {  //if the user enters a wager that is greater than their wallet, it will automatically go all in while keeping wallet above 0.
+                    wager = (int) this.wallet;  // making the wager equal to the players wallet value so that the wallet value does not go negative.
+                    this.wager = wager;
+                    this.wallet -= wager;
+                } else {
+                    this.wager = wager;
+                    this.wallet -= wager;
+                }
+                Exception = false;
+            } catch (Exception e) { //catching invalid input
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.next();
+            }
+            Pot.Wager = this.wager;  //passing the wager to the Pot object.
+            scanner.nextLine();
+            showWallet();
         }
-        Pot.playerWager = this.wager;  //passing the wager to the Pot object.
-        scanner.nextLine();
     }
 
     public int getWager(){ //currently unused method to retrieve the wager value

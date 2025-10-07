@@ -1,13 +1,16 @@
-/** Loose Dealer object, inherits from the Dealers / PLayers classes.
- * This objects turn method is safer than ShadyDealer.
+/** This class represents the 'level 1' dealer, inherits from the Dealers / PLayers classes.
+ * This object represents an honest dealer.
  * It will hit until it gets to 17 or more.
- * No cheating used here
+ * No cheating used here.
  */
 
 public class LooseDealer extends Dealers {
 
-    public LooseDealer(String name){
+    public LooseDealer(String name) {
         super (name = YELLOW+"Loose Dealer"+RESET);
+        this.deckCount = 2;
+        System.out.printf("A %s wants to play "+CYAN+"BlackJack!"+RESET,name);
+        displayDecks();
     }
 
     @Override
