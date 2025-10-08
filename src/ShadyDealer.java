@@ -16,6 +16,7 @@ public class ShadyDealer extends Dealers {
         super (name = MAGENTA+"Shady Dealer"+RESET);
         this.deckCount = 3;
         this.sleevedACE = new Card("ACE", "SPADES", 11);
+        System.out.printf("A %s wants to play "+MAGENTA+"BlackJack!"+RESET,name);
         displayDecks();
     }
 

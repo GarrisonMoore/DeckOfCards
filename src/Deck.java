@@ -48,16 +48,16 @@ public class Deck {
             rankKeys.addAll(ranks.keySet());  // Adding all rank keys to the rankKeys list.
             //suit list
             suits.add(RED + "HEARTS" + " ♥" + RESET);
-            suits.add(RED + "DIAMONDS" + " ♢" + RESET);
-            suits.add(GREY + "CLUBS" + " ♧" + RESET);
+            suits.add(RED + "DIAMONDS" + " ♦" + RESET);
+            suits.add(GREY + "CLUBS" + " ♣" + RESET);
             suits.add(GREY + "SPADES" + " ♠" + RESET);
         }
 
-    public Deck() {
+    public Deck() {  // The deck constructor will create a single deck by dafualt
         this(1);
     }
 
-    public Deck(int deckCount) {
+    public Deck(int deckCount) {   // deck constructor that will create a specified number of decks for each dealer.
             this.deckCount = Math.max(1, deckCount);
             this.generateDeck();
     }

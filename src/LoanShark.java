@@ -41,7 +41,7 @@ public class LoanShark {
         CardGame.loanActive = true; // setting this boolean to true to indicate that the player has a loan active
     }
 
-    public void setInterestRate(){ // method to set the interest rate for the players loan
+    public void setInterestRate() { // method to set the interest rate for the players loan
         this.interest = accountBalance * interestRate; //calculating the interest for the loan
         accountBalance += interest; // adding the interest to the account balance
         System.out.printf("%nYou have been loaned "+GREEN+"$"+ loanAmount + RESET+" with "+RED+"$" + this.interest+RESET+" of interest.");
@@ -55,7 +55,7 @@ public class LoanShark {
             accountBalance -= payment; // subtracting the payment from the account balance
             player.wallet -= payment; // subtracting the payment from the player wallet
             System.out.println("You have paid back $"+payment+".");
-        }if (payment >= accountBalance){ // if the payment is greater than the account balance, the player is paid off
+        } else if (payment >= accountBalance) { // if the payment is greater than the account balance, the player is paid off
             payment = accountBalance;// trying to make the payment equal to the account balance if the payment is greater than account balance.
             System.out.printf("You have paid off your loan of $%f." , payment);
             accountBalance -= payment; // subtracting the payment from the account balance

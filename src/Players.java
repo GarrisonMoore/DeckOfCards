@@ -91,15 +91,15 @@ public abstract class Players {
         boolean Exception = true;
 
         while (Exception) {
-            try { int wager = scanner.nextInt();
+            try { int inputWager = scanner.nextInt();
 
-                if (wager > this.wallet) {  //if the user enters a wager that is greater than their wallet, it will automatically go all in while keeping wallet above 0.
-                    wager = (int) this.wallet;  // making the wager equal to the players wallet value so that the wallet value does not go negative.
-                    this.wager = wager;
-                    this.wallet -= wager;
+                if (inputWager > this.wallet) {  //if the user enters a wager that is greater than their wallet, it will automatically go all in while keeping wallet above 0.
+                    inputWager = (int) this.wallet;  // making the wager equal to the players wallet value so that the wallet value does not go negative.
+                    wager = inputWager;
+                    wallet -= inputWager;
                 } else {
-                    this.wager = wager;
-                    this.wallet -= wager;
+                    wager = inputWager;
+                    wallet -= inputWager;
                 }
                 Exception = false;
             } catch (Exception e) { //catching invalid input
@@ -128,9 +128,32 @@ public abstract class Players {
     public void checkForBlackjack(){ //checks for blackjacks
         if(this.score == 21 && this.playerHand.size() == 2){
             blackjack = true;
-            System.out.printf("%n%s has Blackjack!", name);
+            System.out.printf("%n%s has "+CYAN+"Blackjack!"+RESET, name);
         }
     }
 
+    public void doubleDown() {              // This method was causing a memory corruption error when using this.wallet. Not sure why.
+        System.out.println("\nDouble Down? (y/n)");
+        String answer = scanner.next();
+        if (answer.equalsIgnoreCase("y")) {
+            int doubledWager = this.wager;
 
+            if (this.wager <= 0) {
+                System.out.println("You don't have a wager to double.");
+            }
+            if (this.wallet <= 0) {
+                System.out.println("You don't have enough money to double down.");
+                return;
+            }
+            if (doubledWager > this.wallet) {
+                System.out.println("Not enough funds to double, going all in.");
+                doubledWager = (int) this.wallet;
+            }
+
+            this.wallet -= doubledWager;
+            this.wager += doubledWager;
+            Pot.Wager = this.wager;
+            System.out.printf("Doubled wager: "+GREEN+"%d"+RESET, getWager());
+        }
+    }
 }
